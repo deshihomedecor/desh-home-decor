@@ -20,9 +20,14 @@ export async function SiteFooter() {
                 height={100}
                 className="w-8 md:w-9"
               />
-              <span className="text-xl font-semibold tracking-tight gold-gradient leading-none">
-                Deshi Home <br /> Decor
-              </span>
+              <div className="">
+                <div className="text-2xl mb-[-5px] md:text-2xl font-bold gold-gradient font-bengali">
+                  দেশি হোম
+                </div>
+                <div className="text-2xl  md:text-2xl font-bold gold-gradient font-bengali leading-none ">
+                  ডেকর
+                </div>
+              </div>
             </Link>
             <p className="text-sm text-gray-400">
               Handcrafted Bengali-inspired decor and lighting to bring luxury

@@ -21,6 +21,7 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
   if (request.method !== 'GET') return;
   if (url.origin !== location.origin) return;
+  if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') return;
   const path = url.pathname;
   const isStatic =
     path.startsWith('/_next/static/') ||

@@ -26,7 +26,7 @@ export function SiteHeader() {
       <header className="sticky top-0 z-40 border-b border-[#D4AF37]/20 bg-black/95 backdrop-blur-lg">
         <Container className="flex h-16 items-center justify-between gap-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-end gap-2">
             <Image
               src={'/logo/logo.png'}
               alt="Deshi Home Decor logo"
@@ -35,11 +35,11 @@ export function SiteHeader() {
               className="w-8 md:w-9"
             />
             <div className="">
-              <div className="text-xl mb-[-40px] md:text-2xl font-bold gold-gradient font-bengali">
+              <div className="text-2xl mb-[-5px] md:text-2xl font-bold gold-gradient font-bengali">
                 দেশি হোম
                 
               </div>
-              <div className="text-xl mt-[-40px] md:text-2xl font-bold gold-gradient font-bengali ">
+              <div className="text-2xl  md:text-2xl font-bold gold-gradient font-bengali leading-none ">
                 ডেকর
               </div>
             </div>
