@@ -34,10 +34,15 @@ export function SiteHeader() {
               height={100}
               className="w-8 md:w-9"
             />
-            <span className="text-xl md:text-2xl font-bold gold-gradient leading-none">
-              Deshi Home <br className="sm:block" />
-              <span className="sm:hidden"> </span>Decor
-            </span>
+            <div className="">
+              <div className="text-xl mb-[-40px] md:text-2xl font-bold gold-gradient font-bengali">
+                দেশি হোম
+                
+              </div>
+              <div className="text-xl mt-[-40px] md:text-2xl font-bold gold-gradient font-bengali ">
+                ডেকর
+              </div>
+            </div>
           </Link>
 
           {/* Desktop nav */}
@@ -62,7 +67,11 @@ export function SiteHeader() {
               aria-label="Toggle navigation menu"
               onClick={() => setMenuOpen((prev) => !prev)}
             >
-              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {menuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
             </button>
 
             {/* Cart Button */}
