@@ -1,12 +1,20 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Container } from "@/components/container";
-import { getHomeCategories } from "@/lib/actions/categories";
 
-export default async function HomeCategoriesSection() {
-  const categories = await getHomeCategories();
+type Category = {
+  id: string;
+  name: string;
+  description?: string | null;
+  image?: string | null;
+};
 
-  if (!categories.length) return null;
+export default function HomeCategoriesSection({
+  categories,
+}: {
+  categories: Category[];
+}) {
+  if (!categories?.length) return null;
 
   return (
     <section className="pb-20 pt-4">

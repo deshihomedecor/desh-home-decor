@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
-import { Geist, Geist_Mono, Hind_Siliguri } from 'next/font/google';
+import { Geist, Hind_Siliguri } from 'next/font/google';
 import './globals.css';
 import { ReactQueryProvider } from '@/components/react-query-provider';
 import { CartProvider } from '@/lib/cart-context';
@@ -9,11 +9,6 @@ import { Toaster } from 'sonner';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
   subsets: ['latin'],
 });
 
@@ -72,7 +67,7 @@ export default function RootLayout({
       <head>
         <Script
           id="gtm"
-          strategy="beforeInteractive"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -83,7 +78,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${hindSiliguri.variable} antialiased`}
+        className={`${geistSans.variable} ${hindSiliguri.variable} antialiased`}
       >
         <noscript>
           <iframe

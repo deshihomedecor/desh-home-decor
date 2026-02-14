@@ -8,6 +8,9 @@ import HomeCollectionsSection from '@/components/home-collections-section';
 import { getHeroSlides } from '@/lib/actions/sliders';
 import { getProducts, getAllCategories } from '@/lib/actions/products-list';
 import { getCollections } from '@/lib/actions/collections';
+import { getHomeCollectionProducts } from '@/lib/actions/products';
+import { getHomeCategories } from '@/lib/actions/categories';
+import { getShowcaseReviews } from '@/lib/actions/reviews';
 
 // Revalidate this page every 1 hour (ISR)
 export const revalidate = 3600;
@@ -26,19 +29,23 @@ export default async function Home({ searchParams }: HomePageProps) {
   const params = await searchParams;
   const { category, collection, search, sort, skip } = params;
 
-  const [slides, productsData, collectionsRes, categories] = await Promise.all([
-    getHeroSlides(),
-    getProducts({
-      categoryId: category,
-      collection,
-      search,
-      sortBy: sort,
-      skip: skip ? parseInt(skip) : 0,
-      take: 20,
-    }),
-    getCollections(),
-    getAllCategories(),
-  ]);
+  const [slides, productsData, collectionsRes, categories, homeCollectionsData, homeCategories, showcaseReviews] =
+    await Promise.all([
+      getHeroSlides(),
+      getProducts({
+        categoryId: category,
+        collection,
+        search,
+        sortBy: sort,
+        skip: skip ? parseInt(skip) : 0,
+        take: 20,
+      }),
+      getCollections(),
+      getAllCategories(),
+      getHomeCollectionProducts(),
+      getHomeCategories(6),
+      getShowcaseReviews(10),
+    ]);
 
   const collections = collectionsRes.success ? collectionsRes.data : [];
 
@@ -131,14 +138,13 @@ export default async function Home({ searchParams }: HomePageProps) {
       </section>
 
       {/* Home Collections Section */}
-      <HomeCollectionsSection />
-      
-      {/* Home Categories Section */}
-      <HomeCategoriesSection />
+      <HomeCollectionsSection collectionsWithProducts={homeCollectionsData.collections ?? []} />
 
+      {/* Home Categories Section */}
+      <HomeCategoriesSection categories={homeCategories ?? []} />
 
       {/* Reviews Section */}
-      <HomeShowcaseReviewsSection />
+      <HomeShowcaseReviewsSection reviews={showcaseReviews ?? []} />
     </main>
   );
 }

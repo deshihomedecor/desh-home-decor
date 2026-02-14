@@ -41,6 +41,7 @@ model Category {
   products    Product[]
 
   @@index([isActive])
+  @@index([isActive, order])
   @@index([order])
   @@map("categories")
 }
@@ -75,6 +76,9 @@ model Product {
 
   @@index([categoryId])
   @@index([isActive])
+  @@index([isActive, createdAt])
+  @@index([isActive, price])
+  @@index([isActive, order])
   @@index([isFeatured])
   @@index([order])
   @@map("products")
@@ -98,6 +102,7 @@ model ProductVariant {
   updatedAt   DateTime @updatedAt
 
   @@index([productId])
+  @@index([productId, isActive])
   @@map("product_variants")
 }
 
@@ -116,6 +121,7 @@ model Collection {
   products    ProductOnCollection[]
 
   @@index([isActive])
+  @@index([isActive, order])
   @@index([order])
   @@map("collections")
 }
@@ -129,6 +135,7 @@ model ProductOnCollection {
   collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
 
   @@id([productId, collectionId])
+  @@index([collectionId])
   @@map("product_collections")
 }
 
@@ -164,6 +171,7 @@ model Review {
   @@index([productId])
   @@index([isShowcase])
   @@index([isApproved])
+  @@index([isShowcase, isApproved])
   @@map("reviews")
 }
 
@@ -182,6 +190,7 @@ model SliderContent {
   updatedAt   DateTime @updatedAt
 
   @@index([isActive])
+  @@index([isActive, order])
   @@index([order])
   @@map("slider_contents")
 }
@@ -215,6 +224,7 @@ model Order {
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 
+  @@index([createdAt])
   @@map("orders")
 }
 

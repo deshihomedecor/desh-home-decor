@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { getHomeCollectionProducts } from "@/lib/actions/products";
 import { HomeCollectionsTabs } from "@/components/home-collections-tabs";
 
 export type ProductCard = {
@@ -47,17 +46,25 @@ function mapProducts(items: any[]): ProductCard[] {
   });
 }
 
-export default async function HomeCollectionsSection() {
-  const data = await getHomeCollectionProducts();
+type CollectionWithProducts = {
+  slug: string;
+  name: string;
+  products: any[];
+};
 
-  if (!data.collections?.length) {
+export default function HomeCollectionsSection({
+  collectionsWithProducts,
+}: {
+  collectionsWithProducts: CollectionWithProducts[];
+}) {
+  if (!collectionsWithProducts?.length) {
     return null;
   }
 
-  const collectionsWithMappedProducts = data.collections.map((c) => ({
+  const collectionsWithMappedProducts = collectionsWithProducts.map((c) => ({
     slug: c.slug,
     name: c.name,
-    products: mapProducts(c.products),
+    products: mapProducts(c.products ?? []),
   }));
 
   return (

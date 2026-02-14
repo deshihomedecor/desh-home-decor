@@ -32,7 +32,6 @@ export function ProductImageGallery({
             src={displayImages[selectedIndex]}
             alt={`${productName} - Image ${selectedIndex + 1}`}
             fill
-            priority={selectedIndex === 0}
             className="object-cover"
             sizes="(min-width: 1024px) 50vw, 100vw"
           />
@@ -101,7 +100,6 @@ export function ProductImageGallery({
                 fill
                 className="object-contain"
                 sizes="100vw"
-                priority
               />
             </motion.div>
 

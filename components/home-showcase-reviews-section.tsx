@@ -1,11 +1,23 @@
 import { Container } from '@/components/container';
-import { getShowcaseReviews } from '@/lib/actions/reviews';
 import { ShowcaseReviewsSlider } from '@/components/showcase-reviews-slider';
 
-export default async function HomeShowcaseReviewsSection() {
-  const reviews = await getShowcaseReviews(10);
+type Review = {
+  id: string;
+  userName: string | null;
+  source: string | null;
+  rating: number | null;
+  comment: string | null;
+  image: string | null;
+  screnShotReviewImage: string | null;
+  url: string | null;
+};
 
-  if (!reviews.length) return null;
+export default function HomeShowcaseReviewsSection({
+  reviews,
+}: {
+  reviews: Review[];
+}) {
+  if (!reviews?.length) return null;
 
   const mapped = reviews.map((r) => ({
     id: r.id,
