@@ -215,14 +215,20 @@ export function ProductForm({
     });
   };
 
-  const uploadImage = async (file: File, type: 'featured' | 'additional') => {
+  const uploadImage = async (
+    file: File,
+    type: 'featured' | 'additional',
+    manageLoading = true,
+  ) => {
     const uploadFormData = new FormData();
     uploadFormData.append('image', file);
 
-    if (type === 'featured') {
-      setIsUploadingFeatured(true);
-    } else {
-      setIsUploadingAdditional(true);
+    if (manageLoading) {
+      if (type === 'featured') {
+        setIsUploadingFeatured(true);
+      } else {
+        setIsUploadingAdditional(true);
+      }
     }
 
     try {
@@ -240,18 +246,20 @@ export function ProductForm({
       if (type === 'featured') {
         setFormData({ ...formData, featuredImage: data.url });
       } else {
-        setFormData({
-          ...formData,
-          images: [...formData.images, data.url],
-        });
+        setFormData((prev) => ({
+          ...prev,
+          images: [...prev.images, data.url],
+        }));
       }
     } catch (err: any) {
       alert(err.message || 'Failed to upload image');
     } finally {
-      if (type === 'featured') {
-        setIsUploadingFeatured(false);
-      } else {
-        setIsUploadingAdditional(false);
+      if (manageLoading) {
+        if (type === 'featured') {
+          setIsUploadingFeatured(false);
+        } else {
+          setIsUploadingAdditional(false);
+        }
       }
     }
   };
@@ -769,14 +777,24 @@ export function ProductForm({
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) uploadImage(file, 'additional');
+                multiple
+                onChange={async (e) => {
+                  const files = e.target.files;
+                  if (!files?.length) return;
+                  setIsUploadingAdditional(true);
+                  try {
+                    for (let i = 0; i < files.length; i++) {
+                      await uploadImage(files[i], 'additional', false);
+                    }
+                  } finally {
+                    setIsUploadingAdditional(false);
+                    e.target.value = '';
+                  }
                 }}
                 className="hidden"
                 disabled={isUploadingAdditional}
               />
-              {isUploadingAdditional ? 'Uploading...' : '📤 Upload Image'}
+              {isUploadingAdditional ? 'Uploading...' : '📤 Upload Images'}
             </label>
           </div>
 
