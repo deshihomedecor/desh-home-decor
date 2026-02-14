@@ -9,6 +9,17 @@ import { OrderNowButton } from '@/components/order-now-button';
 
 export const revalidate = 3600;
 
+export const metadata = {
+  title: 'Collections - Deshi Home Decor',
+  description:
+    'Explore our curated collections of home decor – new arrivals, best sellers, and themed sets. Bamboo, rattan, seagrass & more.',
+  openGraph: {
+    title: 'Collections | Deshi Home Decor',
+    description: 'Explore curated home decor collections – new arrivals, best sellers, themed sets.',
+    url: '/collections',
+  },
+};
+
 function formatPrice(value: string) {
   const num = Number(value);
   if (Number.isNaN(num)) return value;

@@ -7,6 +7,15 @@ export const metadata = {
   title: 'Contact Us - Deshi Home Decor',
   description:
     'Get in touch with Deshi Home Decor. Call us, message on WhatsApp, or connect on Facebook and Instagram.',
+  openGraph: {
+    title: 'Contact Us | Deshi Home Decor',
+    description: 'Call, WhatsApp, Facebook, Instagram – we\'d love to hear from you.',
+    url: '/contact',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Contact Us | Deshi Home Decor',
+  },
 };
 
 export default function ContactPage() {

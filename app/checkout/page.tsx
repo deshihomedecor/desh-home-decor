@@ -4,8 +4,9 @@ import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 
 export const metadata = {
-  title: 'Checkout - Shilpini',
+  title: 'Checkout - Deshi Home Decor',
   description: 'Complete your purchase',
+  robots: { index: false, follow: false },
 };
 
 export default function CheckoutPage() {

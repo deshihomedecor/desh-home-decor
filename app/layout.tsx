@@ -49,6 +49,14 @@ export const metadata: Metadata = {
       'Explore handcrafted lighting and decor inspired by Bengali craftsmanship to transform your home with warm, luxurious light.',
   },
   manifest: '/manifest.webmanifest',
+  icons: {
+    icon: [
+      { url: '/logo/favicon.ico', sizes: 'any' },
+      { url: '/logo/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/logo/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: '/logo/apple-touch-icon.png',
+  },
   themeColor: '#D4AF37',
   appleWebApp: {
     capable: true,

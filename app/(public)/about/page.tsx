@@ -8,6 +8,16 @@ export const metadata = {
   title: 'About Us - Deshi Home Decor',
   description:
     'Learn about Deshi Home Decor - your trusted source for eco-friendly bamboo, rattan, seagrass, jute, and premium imported home decor items.',
+  openGraph: {
+    title: 'About Us | Deshi Home Decor',
+    description: 'Eco-friendly bamboo, rattan, seagrass & jute home decor. Supporting local artisans.',
+    url: '/about',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'About Us | Deshi Home Decor',
+    description: 'Eco-friendly bamboo, rattan, seagrass & jute home decor.',
+  },
 };
 
 export default function AboutPage() {

@@ -2,8 +2,9 @@ import { Container } from '@/components/container';
 import { SuccessView } from '@/components/checkout/success-view';
 
 export const metadata = {
-  title: 'Order Placed - Shilpini',
+  title: 'Order Placed - Deshi Home Decor',
   description: 'Thank you for your order',
+  robots: { index: false, follow: false },
 };
 
 export default async function CheckoutSuccessPage({

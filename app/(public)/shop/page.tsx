@@ -7,6 +7,17 @@ import { getCollections } from "@/lib/actions/collections";
 
 export const revalidate = 3600;
 
+export const metadata = {
+  title: 'Shop - Deshi Home Decor',
+  description:
+    'Browse our full collection of bamboo, rattan, seagrass, jute home decor and premium imported lighting. Handcrafted pieces for your space.',
+  openGraph: {
+    title: 'Shop | Deshi Home Decor',
+    description: 'Browse premium home decor and lighting – bamboo, rattan, seagrass, jute.',
+    url: '/shop',
+  },
+};
+
 type ShopPageProps = {
   searchParams: Promise<{
     category?: string;
