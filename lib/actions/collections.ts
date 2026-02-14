@@ -85,7 +85,7 @@ export async function createCollection(data: {
 
     revalidatePath('/admin/collections');
     revalidatePath('/(public)', 'layout');
-    revalidateTag('collections');
+    revalidateTag('collections', 'max');
 
     return { success: true, data: collection };
   } catch (error) {
@@ -122,7 +122,7 @@ export async function updateCollection(
 
     revalidatePath('/admin/collections');
     revalidatePath('/(public)', 'layout');
-    revalidateTag('collections');
+    revalidateTag('collections', 'max');
 
     return { success: true, data: collection };
   } catch (error) {
@@ -139,7 +139,7 @@ export async function deleteCollection(id: string) {
 
     revalidatePath('/admin/collections');
     revalidatePath('/(public)', 'layout');
-    revalidateTag('collections');
+    revalidateTag('collections', 'max');
 
     return { success: true };
   } catch (error) {
@@ -157,7 +157,7 @@ export async function toggleCollectionStatus(id: string, isActive: boolean) {
 
     revalidatePath('/admin/collections');
     revalidatePath('/(public)', 'layout');
-    revalidateTag('collections');
+    revalidateTag('collections', 'max');
 
     return { success: true };
   } catch (error) {

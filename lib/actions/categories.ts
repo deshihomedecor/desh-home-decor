@@ -79,7 +79,7 @@ export async function createCategory(data: {
 
     revalidatePath('/admin/categories');
     revalidatePath('/');
-    revalidateTag('categories');
+    revalidateTag('categories', 'max');
     return { success: true, data: category };
   } catch (error) {
     console.error('Error creating category:', error);
@@ -116,7 +116,7 @@ export async function updateCategory(
 
     revalidatePath('/admin/categories');
     revalidatePath('/');
-    revalidateTag('categories');
+    revalidateTag('categories', 'max');
     return { success: true, data: category };
   } catch (error) {
     console.error('Error updating category:', error);
@@ -132,7 +132,7 @@ export async function deleteCategory(id: string) {
 
     revalidatePath('/admin/categories');
     revalidatePath('/');
-    revalidateTag('categories');
+    revalidateTag('categories', 'max');
     return { success: true };
   } catch (error) {
     console.error('Error deleting category:', error);
@@ -149,7 +149,7 @@ export async function toggleCategoryStatus(id: string, isActive: boolean) {
 
     revalidatePath('/admin/categories');
     revalidatePath('/');
-    revalidateTag('categories');
+    revalidateTag('categories', 'max');
     return { success: true };
   } catch (error) {
     console.error('Error toggling category status:', error);

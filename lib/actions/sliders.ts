@@ -66,7 +66,7 @@ export async function createSlider(data: {
     // Revalidate paths to update cached data
     revalidatePath('/admin/sliders');
     revalidatePath('/');
-    revalidateTag('sliders');
+    revalidateTag('sliders', 'max');
     return { success: true, data: slider };
   } catch (error) {
     console.error('Error creating slider:', error);
@@ -95,7 +95,7 @@ export async function updateSlider(
 
     revalidatePath('/admin/sliders');
     revalidatePath('/');
-    revalidateTag('sliders');
+    revalidateTag('sliders', 'max');
     return { success: true, data: slider };
   } catch (error) {
     console.error('Error updating slider:', error);
@@ -111,7 +111,7 @@ export async function deleteSlider(id: string) {
 
     revalidatePath('/admin/sliders');
     revalidatePath('/');
-    revalidateTag('sliders');
+    revalidateTag('sliders', 'max');
     return { success: true };
   } catch (error) {
     console.error('Error deleting slider:', error);

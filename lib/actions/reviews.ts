@@ -114,7 +114,7 @@ export async function createReview(data: {
 
     revalidatePath('/admin/reviews');
     revalidatePath('/');
-    revalidateTag('reviews');
+    revalidateTag('reviews', 'max');
     return { success: true, data: review };
   } catch (error) {
     console.error('Error creating review:', error);
@@ -162,7 +162,7 @@ export async function updateReview(
 
     revalidatePath('/admin/reviews');
     revalidatePath('/');
-    revalidateTag('reviews');
+    revalidateTag('reviews', 'max');
     return { success: true, data: review };
   } catch (error) {
     console.error('Error updating review:', error);
@@ -179,7 +179,7 @@ export async function deleteReview(id: string) {
 
     revalidatePath('/admin/reviews');
     revalidatePath('/');
-    revalidateTag('reviews');
+    revalidateTag('reviews', 'max');
     return { success: true };
   } catch (error) {
     console.error('Error deleting review:', error);
@@ -197,7 +197,7 @@ export async function toggleReviewApproval(id: string, isApproved: boolean) {
 
     revalidatePath('/admin/reviews');
     revalidatePath('/');
-    revalidateTag('reviews');
+    revalidateTag('reviews', 'max');
     return { success: true };
   } catch (error) {
     console.error('Error toggling review approval:', error);

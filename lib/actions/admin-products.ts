@@ -97,8 +97,8 @@ export async function createProduct(data: ProductFormData) {
 
   revalidatePath('/admin/products');
   revalidatePath('/(public)', 'layout');
-  revalidateTag('products');
-  revalidateTag('collections');
+  revalidateTag('products', 'max');
+  revalidateTag('collections', 'max');
 
   return { success: true, id: product.id };
 }
@@ -174,8 +174,8 @@ export async function updateProduct(id: string, data: ProductFormData) {
   revalidatePath('/admin/products');
   revalidatePath(`/admin/products/${id}`);
   revalidatePath('/(public)', 'layout');
-  revalidateTag('products');
-  revalidateTag('collections');
+  revalidateTag('products', 'max');
+  revalidateTag('collections', 'max');
 
   return { success: true, id: product.id };
 }
@@ -187,8 +187,8 @@ export async function deleteProduct(id: string) {
 
   revalidatePath('/admin/products');
   revalidatePath('/(public)', 'layout');
-  revalidateTag('products');
-  revalidateTag('collections');
+  revalidateTag('products', 'max');
+  revalidateTag('collections', 'max');
 
   return { success: true };
 }
