@@ -43,15 +43,10 @@ export async function createProduct(data: ProductFormData) {
       name: data.name,
       description: data.description || null,
       price:
-        data.price && data.price.toString().trim() !== ''
-          ? data.price
-          : null,
+        data.price && data.price.toString().trim() !== '' ? data.price : null,
       comparePrice: data.comparePrice || null,
       sku: data.sku || null,
-      stock:
-        typeof data.stock === 'number'
-          ? data.stock
-          : undefined,
+      stock: typeof data.stock === 'number' ? data.stock : undefined,
       weight:
         data.weight && data.weight.toString().trim() !== ''
           ? data.weight
@@ -112,15 +107,10 @@ export async function updateProduct(id: string, data: ProductFormData) {
       name: data.name,
       description: data.description || null,
       price:
-        data.price && data.price.toString().trim() !== ''
-          ? data.price
-          : null,
+        data.price && data.price.toString().trim() !== '' ? data.price : null,
       comparePrice: data.comparePrice || null,
       sku: data.sku || null,
-      stock:
-        typeof data.stock === 'number'
-          ? data.stock
-          : undefined,
+      stock: typeof data.stock === 'number' ? data.stock : undefined,
       weight:
         data.weight && data.weight.toString().trim() !== ''
           ? data.weight
@@ -218,4 +208,28 @@ export async function getAllCollectionsForForm() {
   });
 
   return collections;
+}
+
+export async function reorderProducts(items: { id: string; order: number }[]) {
+  try {
+    // We use a transaction to ensure all updates succeed or fail together.
+    await prisma.$transaction(
+      items.map((item) =>
+        prisma.product.update({
+          where: { id: item.id },
+          data: { order: item.order },
+        }),
+      ),
+    );
+
+    revalidatePath('/admin/products');
+    revalidatePath('/(public)', 'layout');
+    revalidateTag('products', 'max');
+    revalidateTag('collections', 'max');
+
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to reorder products:', error);
+    return { success: false, error: 'Failed to update order' };
+  }
 }

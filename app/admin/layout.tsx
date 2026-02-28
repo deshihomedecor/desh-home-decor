@@ -71,7 +71,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           {/* Logo */}
           <div className="border-b px-6 py-4">
             <Link href="/admin" className="flex items-center gap-2">
-              <span className="text-xl font-bold">Shilpini Admin</span>
+              <span className="text-xl font-bold">Deshi Admin</span>
             </Link>
             <p className="mt-1 text-xs text-muted-foreground">Admin Panel</p>
           </div>

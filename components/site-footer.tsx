@@ -1,11 +1,11 @@
-import Link from "next/link";
-import { Container } from "@/components/container";
-import { getCollections } from "@/lib/actions/collections";
-import Image from "next/image";
+import Link from 'next/link';
+import { Container } from '@/components/container';
+import { getCollections } from '@/lib/actions/collections';
+import Image from 'next/image';
 
 export async function SiteFooter() {
   const collectionsRes = await getCollections();
-  const collections = collectionsRes.success ? collectionsRes.data ?? [] : [];
+  const collections = collectionsRes.success ? (collectionsRes.data ?? []) : [];
   return (
     <footer className="border-t border-[#D4AF37]/20 bg-black">
       <Container className="py-12 text-gray-300">
@@ -224,9 +224,13 @@ export async function SiteFooter() {
         {/* Bottom Bar */}
         <div className="mt-12 border-t border-[#D4AF37]/20 pt-8">
           <div className="flex flex-col items-center justify-between gap-4 text-sm text-gray-400 sm:flex-row">
-            <p>
-              &copy; {new Date().getFullYear()} Deshi Home Decor. All rights
-              reserved.
+            <p className="flex items-center gap-1">
+              <span>
+                &copy; {new Date().getFullYear()} Deshi Home Decor. All rights
+              </span>{' '}
+              <span>
+                <Link href="/admin">reserved.</Link>
+              </span>
             </p>
             <div className="flex gap-6">
               <Link href="/shop" className="transition hover:text-foreground">
