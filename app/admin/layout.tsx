@@ -121,7 +121,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         <header className="sticky top-0 z-40 border-b bg-background px-4 py-4 lg:hidden">
           <div className="flex items-center justify-between">
             <Link href="/admin">
-              <span className="text-lg font-bold">Shilpini Admin</span>
+              <span className="text-lg font-bold">Deshi Admin</span>
             </Link>
             <button
               type="button"

@@ -73,7 +73,7 @@ export default function AdminLoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   className="w-full h-11 rounded-lg border bg-background px-4 py-2 text-sm transition focus:outline-none focus:ring-2 focus:ring-ring sm:h-12"
-                  placeholder="admin@shilpini.com"
+                  placeholder=""
                 />
               </div>
 
@@ -105,10 +105,6 @@ export default function AdminLoginPage() {
             </button>
           </form>
         </div>
-
-        <p className="text-center text-xs text-muted-foreground sm:text-sm">
-          Default: admin@shilpini.com / admin123
-        </p>
       </div>
     </div>
   );

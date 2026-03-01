@@ -34,7 +34,7 @@ export async function setAdminSession(adminId: string) {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 365, // 1 year
+    maxAge: 60 * 60 * 24 * 700, // 1 year
   });
 }
 
