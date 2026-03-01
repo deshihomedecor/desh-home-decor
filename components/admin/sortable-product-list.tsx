@@ -89,11 +89,19 @@ export function SortableProductList({ initialProducts }: Props) {
       const newProducts = arrayMove(products, oldIndex, newIndex);
       setProducts(newProducts);
 
-      // Prepare items for server update
-      const itemsToUpdate = newProducts.map((p, index) => ({
-        id: p.id,
-        order: index,
-      }));
+      // Prepare items for server update - only send items that actually changed position
+      const itemsToUpdate = newProducts
+        .map((p, index) => ({
+          id: p.id,
+          order: index,
+        }))
+        .filter((item) => {
+          // Find the original product to compare its order
+          const original = products.find((p) => p.id === item.id);
+          return original && original.order !== item.order;
+        });
+
+      if (itemsToUpdate.length === 0) return;
 
       const result = await reorderProducts(itemsToUpdate);
       if (!result.success) {

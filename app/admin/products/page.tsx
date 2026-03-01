@@ -10,7 +10,7 @@ export const revalidate = 0;
 
 export default async function AdminProductsPage() {
   const productsRaw = await prisma.product.findMany({
-    orderBy: { order: 'asc' },
+    orderBy: [{ order: 'asc' }, { createdAt: 'desc' }],
     include: {
       category: true,
     },

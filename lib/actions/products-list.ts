@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use server';
 
 import { unstable_cache } from 'next/cache';
@@ -58,15 +59,15 @@ export async function getProducts(filters: ProductFilters = {}) {
   }
 
   // Build orderBy clause. Uses an array so we can have a secondary sort key.
-  let orderBy:
-    | { order: 'asc' }[]
-    | { createdAt: 'asc' | 'desc' }[]
-    | { price: 'asc' | 'desc' }[] = [{ order: 'asc' }];
+  let orderBy: Array<Record<string, any>> = [
+    { order: 'asc' },
+    { createdAt: 'desc' },
+  ];
 
   switch (sortBy) {
     case 'default':
       // Manual drag order, newest as tiebreaker
-      orderBy = [{ order: 'asc' }];
+      orderBy = [{ order: 'asc' }, { createdAt: 'desc' }];
       break;
     case 'newest':
       orderBy = [{ createdAt: 'desc' }];
@@ -75,14 +76,14 @@ export async function getProducts(filters: ProductFilters = {}) {
       orderBy = [{ createdAt: 'asc' }];
       break;
     case 'price-asc':
-      orderBy = [{ price: 'asc' }];
+      orderBy = [{ price: 'asc' }, { createdAt: 'desc' }];
       break;
     case 'price-desc':
-      orderBy = [{ price: 'desc' }];
+      orderBy = [{ price: 'desc' }, { createdAt: 'desc' }];
       break;
     default:
       // No filter selected — respect manual ordering
-      orderBy = [{ order: 'asc' }];
+      orderBy = [{ order: 'asc' }, { createdAt: 'desc' }];
   }
 
   const [products, total] = await Promise.all([

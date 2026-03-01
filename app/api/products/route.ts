@@ -1,20 +1,20 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getProducts } from "@/lib/actions/products-list";
+import { NextRequest, NextResponse } from 'next/server';
+import { getProducts } from '@/lib/actions/products-list';
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
 
-    const category = searchParams.get("category") || undefined;
-    const collection = searchParams.get("collection") || undefined;
-    const search = searchParams.get("search") || undefined;
-    const sort = searchParams.get("sort") as
-      | "newest"
-      | "oldest"
-      | "price-asc"
-      | "price-desc"
-      | undefined;
-    const skip = parseInt(searchParams.get("skip") || "0");
+    const category = searchParams.get('category') || undefined;
+    const collection = searchParams.get('collection') || undefined;
+    const search = searchParams.get('search') || undefined;
+    const sort = (searchParams.get('sort') || 'default') as
+      | 'default'
+      | 'newest'
+      | 'oldest'
+      | 'price-asc'
+      | 'price-desc';
+    const skip = parseInt(searchParams.get('skip') || '0');
 
     const data = await getProducts({
       categoryId: category,
@@ -73,10 +73,10 @@ export async function GET(request: NextRequest) {
       hasMore: data.hasMore,
     });
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error('Error fetching products:', error);
     return NextResponse.json(
-      { error: "Failed to fetch products" },
-      { status: 500 }
+      { error: 'Failed to fetch products' },
+      { status: 500 },
     );
   }
 }

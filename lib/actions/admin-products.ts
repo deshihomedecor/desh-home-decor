@@ -211,15 +211,23 @@ export async function getAllCollectionsForForm() {
 }
 
 export async function reorderProducts(items: { id: string; order: number }[]) {
+  if (items.length === 0) return { success: true };
+
   try {
-    // We use a transaction to ensure all updates succeed or fail together.
+    console.log(`Reordering ${items.length} products...`);
+    // We use an interactive transaction to support the timeout option.
     await prisma.$transaction(
-      items.map((item) =>
-        prisma.product.update({
-          where: { id: item.id },
-          data: { order: item.order },
-        }),
-      ),
+      async (tx) => {
+        for (const item of items) {
+          await tx.product.update({
+            where: { id: item.id },
+            data: { order: item.order },
+          });
+        }
+      },
+      {
+        timeout: 30000, // 30 seconds
+      },
     );
 
     revalidatePath('/admin/products');
@@ -227,9 +235,13 @@ export async function reorderProducts(items: { id: string; order: number }[]) {
     revalidateTag('products', 'max');
     revalidateTag('collections', 'max');
 
+    console.log('Product reordering successful');
     return { success: true };
   } catch (error) {
     console.error('Failed to reorder products:', error);
-    return { success: false, error: 'Failed to update order' };
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to update order',
+    };
   }
 }
