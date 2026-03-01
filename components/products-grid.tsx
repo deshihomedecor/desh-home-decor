@@ -49,56 +49,108 @@ export function ProductsGrid({
   const [isLoading, setIsLoading] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
+  // Use refs for values that need to be read inside async loops
+  // (avoids stale closure bugs when fetching in the background).
+  const isLoadingRef = useRef(false);
+  const hasMoreRef = useRef(initialHasMore);
+  const productsLengthRef = useRef(initialProducts.length);
+  const cancelRef = useRef(false);
+
+  // Keep refs in sync with state
+  useEffect(() => {
+    hasMoreRef.current = hasMore;
+  }, [hasMore]);
+
+  useEffect(() => {
+    productsLengthRef.current = products.length;
+  }, [products.length]);
+
   // Reset products when filters change
   useEffect(() => {
     setProducts(initialProducts);
     setHasMore(initialHasMore);
+    hasMoreRef.current = initialHasMore;
+    productsLengthRef.current = initialProducts.length;
   }, [searchParams, initialProducts, initialHasMore]);
 
-  const loadMore = async () => {
-    if (isLoading || !hasMore) return;
+  // Core fetch function — reads from refs to avoid stale closures
+  const fetchNext = async () => {
+    if (isLoadingRef.current || !hasMoreRef.current) return false;
 
+    isLoadingRef.current = true;
     setIsLoading(true);
 
     try {
       const params = new URLSearchParams(searchParams.toString());
-      params.set('skip', products.length.toString());
+      params.set('skip', productsLengthRef.current.toString());
 
       const response = await fetch(`/api/products?${params.toString()}`);
       const data = await response.json();
 
-      setProducts((prev) => [...prev, ...data.products]);
-      setHasMore(data.hasMore);
+      if (!cancelRef.current) {
+        setProducts((prev) => [...prev, ...data.products]);
+        setHasMore(data.hasMore);
+        hasMoreRef.current = data.hasMore;
+        productsLengthRef.current += data.products.length;
+      }
+      return data.hasMore as boolean;
     } catch (error) {
       console.error('Failed to load more products:', error);
+      return false;
     } finally {
+      isLoadingRef.current = false;
       setIsLoading(false);
     }
   };
 
-  // Intersection Observer for infinite scroll
+  // Silent background prefetch loop:
+  // Waits 800ms after render to not compete with initial paint,
+  // then fetches all remaining pages one by one, silently.
+  useEffect(() => {
+    if (!initialHasMore) return;
+    cancelRef.current = false;
+
+    const timer = setTimeout(async () => {
+      let more = true;
+      while (more && !cancelRef.current) {
+        more = await fetchNext();
+        if (more) {
+          // Small breathing room between batches
+          await new Promise((r) => setTimeout(r, 400));
+        }
+      }
+    }, 800);
+
+    return () => {
+      clearTimeout(timer);
+      cancelRef.current = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
+  // Intersection Observer — fires for fast scrollers who reach the bottom
+  // before the background loop gets there.
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isLoading) {
-          void loadMore();
+        if (
+          entries[0].isIntersecting &&
+          hasMoreRef.current &&
+          !isLoadingRef.current
+        ) {
+          void fetchNext();
         }
       },
       { threshold: 0.1 },
     );
 
     const currentRef = loadMoreRef.current;
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
-
+    if (currentRef) observer.observe(currentRef);
     return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
+      if (currentRef) observer.unobserve(currentRef);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasMore, isLoading, products.length]);
+  }, []);
 
   if (!products.length) {
     return (
@@ -138,82 +190,89 @@ export function ProductsGrid({
 
             <div className="relative z-10 flex flex-1 flex-col">
               <div className="relative aspect-square overflow-hidden rounded-t-2xl bg-zinc-800">
-              {product.featuredImage ? (
-                <Image
-                  src={product.featuredImage}
-                  alt={product.name}
-                  fill
-                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                  className="object-cover transition duration-700 group-hover:scale-110 group-hover:rotate-1"
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
-                  No image
-                </div>
-              )}
-              {!product.hasMultipleVariants &&
-                product.comparePrice &&
-                Number(product.comparePrice) > Number(product.price) && (
-                  <div className="absolute right-3 top-3 rounded-full bg-[#D4AF37] px-2 py-1 text-xs font-semibold text-black shadow-lg">
-                    Sale
+                {product.featuredImage ? (
+                  <Image
+                    src={product.featuredImage}
+                    alt={product.name}
+                    fill
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    className="object-cover transition duration-700 group-hover:scale-110 group-hover:rotate-1"
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
+                    No image
                   </div>
                 )}
-            </div>
+                {!product.hasMultipleVariants &&
+                  product.comparePrice &&
+                  Number(product.comparePrice) > Number(product.price) && (
+                    <div className="absolute right-3 top-3 rounded-full bg-[#D4AF37] px-2 py-1 text-xs font-semibold text-black shadow-lg">
+                      Sale
+                    </div>
+                  )}
+              </div>
 
               <div className="flex flex-1 flex-col gap-1 p-3 sm:gap-2 sm:p-4">
-              <BanglaText as="h3" className="line-clamp-2 text-sm font-medium leading-tight text-white sm:text-base group-hover:text-[#D4AF37] transition-colors duration-300">
-                {product.name}
-              </BanglaText>
+                <BanglaText
+                  as="h3"
+                  className="line-clamp-2 text-sm font-medium leading-tight text-white sm:text-base group-hover:text-[#D4AF37] transition-colors duration-300"
+                >
+                  {product.name}
+                </BanglaText>
 
-              <div className="mt-auto flex items-baseline gap-1 sm:gap-2">
-                {product.hasMultipleVariants && product.priceMin && product.priceMax ? (
-                  <span className="text-base font-semibold text-[#D4AF37] sm:text-lg">
-                    {formatPrice(product.priceMin)} - {formatPrice(product.priceMax)}
-                  </span>
-                ) : (
-                  <>
+                <div className="mt-auto flex items-baseline gap-1 sm:gap-2">
+                  {product.hasMultipleVariants &&
+                  product.priceMin &&
+                  product.priceMax ? (
                     <span className="text-base font-semibold text-[#D4AF37] sm:text-lg">
-                      {formatPrice(product.price)}
+                      {formatPrice(product.priceMin)} -{' '}
+                      {formatPrice(product.priceMax)}
                     </span>
-                    {product.comparePrice &&
-                      Number(product.comparePrice) > Number(product.price) && (
-                        <span className="text-xs text-gray-500 line-through sm:text-sm">
-                          {formatPrice(product.comparePrice)}
-                        </span>
-                      )}
-                  </>
-                )}
-              </div>
+                  ) : (
+                    <>
+                      <span className="text-base font-semibold text-[#D4AF37] sm:text-lg">
+                        {formatPrice(product.price)}
+                      </span>
+                      {product.comparePrice &&
+                        Number(product.comparePrice) >
+                          Number(product.price) && (
+                          <span className="text-xs text-gray-500 line-through sm:text-sm">
+                            {formatPrice(product.comparePrice)}
+                          </span>
+                        )}
+                    </>
+                  )}
+                </div>
 
-              <div className="mt-2 flex gap-2 sm:mt-3">
-                <AddToCartButton
-                  product={{
-                    id: product.id,
-                    name: product.name,
-                    price: product.price,
-                    featuredImage: product.featuredImage,
-                    stock: product.stock,
-                    weight: product.weight ?? null,
-                    categoryName: product.category?.name,
-                  }}
-                  variant="compact"
-                  className="flex-1"
-                />
-                <OrderNowButton
-                  product={{
-                    id: product.id,
-                    name: product.name,
-                    price: product.price,
-                    featuredImage: product.featuredImage,
-                    stock: product.stock,
-                    weight: product.weight ?? null,
-                    categoryName: product.category?.name,
-                  }}
-                  variant="compact"
-                  className="flex-1"
-                />
+                <div className="mt-2 flex gap-2 sm:mt-3">
+                  <AddToCartButton
+                    product={{
+                      id: product.id,
+                      name: product.name,
+                      price: product.price,
+                      featuredImage: product.featuredImage,
+                      stock: product.stock,
+                      weight: product.weight ?? null,
+                      categoryName: product.category?.name,
+                    }}
+                    variant="compact"
+                    className="flex-1"
+                  />
+                  <OrderNowButton
+                    product={{
+                      id: product.id,
+                      name: product.name,
+                      price: product.price,
+                      featuredImage: product.featuredImage,
+                      stock: product.stock,
+                      weight: product.weight ?? null,
+                      categoryName: product.category?.name,
+                    }}
+                    variant="compact"
+                    className="flex-1"
+                  />
+                </div>
               </div>
-            </div>
             </div>
 
             {/* Hover Glow Effect */}
