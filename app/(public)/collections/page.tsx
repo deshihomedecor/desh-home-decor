@@ -19,10 +19,10 @@ export const metadata = {
     title: 'Curated Home Decor Collections | Deshi Home Decor',
     description:
       'Explore curated home decor collections – new arrivals, best sellers, themed sets. Elevate your space with our premium selection.',
-    url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://deshihomedecor.com'}/collections`,
     siteName: 'Deshi Home Decor',
     locale: 'en_US',
     type: 'website',
+    images: ['/opengraph-image.jpg'],
   },
   alternates: {
     canonical: `${process.env.NEXT_PUBLIC_APP_URL || 'https://deshihomedecor.com'}/collections`,

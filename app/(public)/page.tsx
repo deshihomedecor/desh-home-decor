@@ -33,6 +33,14 @@ export const metadata = {
     siteName: 'Deshi Home Decor',
     locale: 'en_US',
     type: 'website',
+    images: [
+      {
+        url: '/opengraph-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Deshi Home Decor - Premium Handcrafted Decor',
+      },
+    ],
   },
   alternates: {
     canonical: process.env.NEXT_PUBLIC_APP_URL || 'https://deshihomedecor.com',

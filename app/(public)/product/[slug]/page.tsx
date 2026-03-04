@@ -33,6 +33,10 @@ export async function generateMetadata(
 
   const previousImages = (await parent).openGraph?.images || [];
 
+  const ogImage =
+    product.featuredImage ||
+    (product.images.length > 0 ? product.images[0] : null);
+
   return {
     title: `${product.name} | Premium Deshi Home Decor & Lighting`,
     description:
@@ -49,13 +53,15 @@ export async function generateMetadata(
     ].join(', '),
     openGraph: {
       title: `${product.name} | Deshi Home Decor`,
-      description: product.description?.slice(0, 160),
+      description:
+        product.description?.slice(0, 160) ||
+        `Buy ${product.name} at Deshi Home Decor`,
       url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://deshihomedecor.com'}/product/${product.slug}`,
       siteName: 'Deshi Home Decor',
-      images: product.featuredImage
+      images: ogImage
         ? [
             {
-              url: product.featuredImage,
+              url: ogImage,
               width: 800,
               height: 800,
               alt: product.name,
@@ -69,8 +75,10 @@ export async function generateMetadata(
     twitter: {
       card: 'summary_large_image',
       title: product.name,
-      description: product.description?.slice(0, 160),
-      images: product.featuredImage ? [product.featuredImage] : [],
+      description:
+        product.description?.slice(0, 160) ||
+        `Buy ${product.name} at Deshi Home Decor`,
+      images: ogImage ? [ogImage] : [],
     },
     alternates: {
       canonical: `${process.env.NEXT_PUBLIC_APP_URL || 'https://deshihomedecor.com'}/product/${product.slug}`,
