@@ -86,15 +86,19 @@ export function ProductsGrid({
       params.set('skip', productsLengthRef.current.toString());
 
       const response = await fetch(`/api/products?${params.toString()}`);
+      if (!response.ok) {
+        throw new Error(`Failed to load products: ${response.statusText}`);
+      }
+
       const data = await response.json();
 
-      if (!cancelRef.current) {
+      if (!cancelRef.current && Array.isArray(data.products)) {
         setProducts((prev) => [...prev, ...data.products]);
-        setHasMore(data.hasMore);
-        hasMoreRef.current = data.hasMore;
+        setHasMore(Boolean(data.hasMore));
+        hasMoreRef.current = Boolean(data.hasMore);
         productsLengthRef.current += data.products.length;
       }
-      return data.hasMore as boolean;
+      return Boolean(data.hasMore);
     } catch (error) {
       console.error('Failed to load more products:', error);
       return false;
@@ -155,7 +159,7 @@ export function ProductsGrid({
 
   if (!products.length) {
     return (
-      <div className="flex min-h-[400px] items-center justify-center">
+      <div className="flex min-h-100 items-center justify-center">
         <div className="text-center">
           <p className="text-lg font-medium text-muted-foreground">
             No products found
@@ -184,7 +188,7 @@ export function ProductsGrid({
             className="group relative flex flex-col overflow-hidden rounded-2xl border border-zinc-700 bg-linear-to-br from-zinc-900 to-black transition-all duration-700 ease-out hover:-translate-y-0.5 hover:border-zinc-600"
           >
             {/* Animated Gold Border */}
-            <div className="pointer-events-none absolute inset-0 rounded-2xl p-[2px]">
+            <div className="pointer-events-none absolute inset-0 rounded-2xl p-0.5">
               <div className="absolute inset-0 rounded-2xl bg-linear-to-r from-[#D4AF37] via-[#F4E4C1] to-[#D4AF37] opacity-0 transition-opacity duration-700 ease-in-out group-hover:opacity-100" />
               <div className="relative h-full w-full rounded-2xl bg-linear-to-br from-zinc-900 to-black" />
             </div>

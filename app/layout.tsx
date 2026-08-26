@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
 import { Geist, Hind_Siliguri } from 'next/font/google';
 import './globals.css';
@@ -17,6 +17,10 @@ const hindSiliguri = Hind_Siliguri({
   subsets: ['latin', 'bengali'],
   weight: ['300', '400', '500', '600', '700'],
 });
+
+export const viewport: Viewport = {
+  themeColor: '#D4AF37',
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -69,7 +73,6 @@ export const metadata: Metadata = {
     ],
     apple: '/logo/apple-touch-icon.png',
   },
-  themeColor: '#D4AF37',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',

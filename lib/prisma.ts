@@ -1,14 +1,27 @@
 import { PrismaClient } from "../generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 
-const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
+const globalForPrisma = globalThis as unknown as {
+  prisma?: PrismaClient;
+  pgPool?: Pool;
+};
 
 const log =
   process.env.NODE_ENV === "development" ? (["query", "error", "warn"] as const) : (["error"] as const);
 
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL,
-});
+const pool =
+  globalForPrisma.pgPool ??
+  new Pool({
+    connectionString: process.env.DATABASE_URL,
+    max: 5,
+    idleTimeoutMillis: 10000,
+    connectionTimeoutMillis: 5000,
+  });
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.pgPool = pool;
+
+const adapter = new PrismaPg(pool);
 
 export const prisma =
   globalForPrisma.prisma ??
@@ -23,4 +36,5 @@ export const prisma =
       }));
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+
 
